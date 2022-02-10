@@ -8,14 +8,11 @@ export class AuthService {
 
   constructor(private readonly cryptoService : CryptoService){}
 
-
-  seedPhrase = "";
+  seedPhrase = "execute fetch develop endorse away solid verb action tortoise judge wrap kiwi custom rapid husband advance cloud inflict toddler alien install scatter swift gauge";
 
   async recover() {
 
-    let response = await this.cryptoService.checkSeedPhrase("", this.seedPhrase);
-
-    var keyWords = ['email', 'phone', 'identity'];
+    let response = await this.cryptoService.checkSeedPhrase("claudioliv", this.seedPhrase);
 
     // var keyPair = await this.cryptoService.generateKeyPairFromSeedPhrase(this.seedPhrase);
     // console.log("publicKey", encodeBase64(keyPair.publicKey));
