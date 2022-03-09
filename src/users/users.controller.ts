@@ -2,26 +2,28 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode } from '@ne
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ErrorHandling } from 'src/config/error-handling';
 import { HttpResponseDto } from 'src/config/http-response.dto';
-import { AuthService } from './auth.service';
-import { CreateAuthDto } from './dto/create-auth.dto';
-import { UpdateAuthDto } from './dto/update-auth.dto';
+import { UsersLoginBodyDto } from './dtos/users-login-body.dto';
+import { UsersLoginResponseDto } from './dtos/users-login-response.dto';
+import { UsersService } from './users.service';
 
-@Controller('auth')
-export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+@Controller('users')
+export class UsersController {
+  constructor(
+    private readonly usersService: UsersService,
+    ) {}
 
   @ApiTags('auth')
   @ApiOperation({ summary: 'Login with Threefold Connect account' })
-  @ApiBody({ type: CreateAuthDto })
-  @ApiResponse({ status: 200, description: 'Successfully logged in '})
+  @ApiBody({ type: UsersLoginBodyDto })
+  @ApiResponse({ status: 200, description: 'Successfully logged in', type : UsersLoginResponseDto })
   @ApiResponse({ status: 400, description: 'Bad Request', type: HttpResponseDto })
   @ApiResponse({ status: 403, description: 'Forbidden', type: HttpResponseDto })
   @ApiResponse({ status: 500, description: "Internal Server Error", type: HttpResponseDto })
   @Post('recover')
   @HttpCode(200)
-  recover(@Body() createAuthDto: CreateAuthDto) {
+  recover(@Body() body: UsersLoginBodyDto) {
     try {
-      return this.authService.recover(createAuthDto.login, createAuthDto.seedPhrase);
+      return this.usersService.login(body.login, body.seedPhrase);
     } catch (error) {
       new ErrorHandling(error);
     }
