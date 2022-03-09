@@ -1,5 +1,6 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { Pool } from 'pg';
+import { Users } from 'src/users/entities/users.entity';
 
 require('dotenv').config();
 
@@ -38,7 +39,9 @@ class ConfigService {
         password: this.getValue('POSTGRES_PASSWORD'),
         database: this.getValue('POSTGRES_DATABASE'),
         synchronize: !this.isProduction(),
-        entities: [],
+        entities: [
+          Users,
+        ],
         migrationsTableName: 'migration',
         migrations: ['src/migration/*.ts'],
         cli: {
