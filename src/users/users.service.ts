@@ -50,5 +50,13 @@ export class UsersService {
       await this.usersRepository.createNewUser(userData);
       return; 
     }
-
+    
+    async checkUserExists(username : string){
+      var getUserByName = await this.usersRepository.getUserByUsername(username);
+      if(getUserByName){
+        return { message:"USER_ALREADY_EXISTS" };
+      }else{
+        return { message:"OK" };
+      }
+    }
 }

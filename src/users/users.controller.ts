@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Query } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ErrorHandling } from 'src/config/error-handling';
 import { HttpResponseDto } from 'src/config/http-response.dto';
-import { UsersLoginBodyDto, UsersCreateBodyDto } from './dtos/users-login-body.dto';
-import { UsersLoginResponseDto } from './dtos/users-login-response.dto';
+import { UsersLoginBodyDto, UsersCreateBodyDto, UsersExistBodyDto } from './dtos/users-login-body.dto';
+import { UsersLoginResponseDto, UsersExistResponseDto } from './dtos/users-login-response.dto';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -41,6 +41,22 @@ export class UsersController {
   create(@Body() body: UsersCreateBodyDto) {
     try {
       return this.usersService.createUser(body)
+    } catch (error) {
+      new ErrorHandling(error);
+    }
+  }
+
+  @ApiTags('users')
+  @ApiOperation({ summary: 'Checks if user already exists' })
+  @ApiResponse({ status: 200, description: 'Success', type : UsersExistResponseDto })
+  @ApiResponse({ status: 400, description: 'Bad Request', type: HttpResponseDto })
+  @ApiResponse({ status: 403, description: 'Forbidden', type: HttpResponseDto })
+  @ApiResponse({ status: 500, description: "Internal Server Error", type: HttpResponseDto })
+  @Get('exist')
+  @HttpCode(200)
+  async exist(@Query() dataQuery: UsersExistBodyDto) {
+    try {
+      return await this.usersService.checkUserExists(dataQuery.username)
     } catch (error) {
       new ErrorHandling(error);
     }

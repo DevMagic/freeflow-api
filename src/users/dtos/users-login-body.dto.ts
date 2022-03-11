@@ -32,3 +32,11 @@ export class UsersCreateBodyDto {
     seedPhrase : string;
 
 }
+
+export class UsersExistBodyDto {
+
+    @ApiProperty()
+    @IsNotEmpty()
+    username : string;
+
+}
