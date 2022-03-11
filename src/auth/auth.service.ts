@@ -20,8 +20,8 @@ export class AuthService {
   async recover(login : string, seedPhrase : string) : Promise<UsersLoginResponseDto> {
 
     var threefoldLogin = new ThreefoldLogin(
-      process.env.THREEFOLD_BOT_API_URL_STAGING,
-      process.env.PKID_API_URL_STAGING,
+      process.env.THREEFOLD_BOT_API_URL,
+      process.env.PKID_API_URL,
       {
         showWarnings : false
       }
@@ -63,8 +63,8 @@ export class AuthService {
     }
 
     var threefoldLogin = new ThreefoldLogin(
-      process.env.THREEFOLD_BOT_API_URL_STAGING,
-      process.env.PKID_API_URL_STAGING,
+      process.env.THREEFOLD_BOT_API_URL,
+      process.env.PKID_API_URL,
       {
         showWarnings : false
       }
