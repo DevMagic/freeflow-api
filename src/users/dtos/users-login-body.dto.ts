@@ -12,3 +12,23 @@ export class UsersLoginBodyDto {
     seedPhrase : string;
 
 }
+
+export class UsersCreateBodyDto {
+
+    @ApiProperty()
+    @IsNotEmpty()
+    displayName : string;
+
+    @ApiProperty()
+    @IsNotEmpty()
+    username : string;
+
+    @ApiProperty()
+    @IsNotEmpty()
+    email : string;
+
+    @ApiProperty()
+    @IsNotEmpty()
+    seedPhrase : string;
+
+}
