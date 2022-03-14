@@ -28,7 +28,7 @@ export class Users extends BaseEntity {
     @Column({ nullable: true, type: 'varchar', name: 'photo_url' })
     photoUrl : string;
 
-    @Column({ nullable: false, type: 'varchar' })
+    @Column({ nullable: true, type: 'varchar' })
     publicKey : string;
 
     @CreateDateColumn({ name: 'created_at' })

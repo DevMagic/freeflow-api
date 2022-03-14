@@ -20,6 +20,12 @@ export class UsersRepository extends Repository<Users>{
         return await this.save(user);
     }
 
+    async createNewUser(userData){
+        const user = this.create();
+        Object.assign(user, userData);
+        return await this.save(user);
+    }
+
     async getUserByEmail(email: string) : Promise<Users> {
         const user = await this.findOne({
           where: { email },

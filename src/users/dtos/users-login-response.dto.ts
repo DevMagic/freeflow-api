@@ -16,3 +16,10 @@ export class UsersLoginResponseDto {
     token : string;
 
 }
+
+export class UsersExistResponseDto {
+
+    @ApiProperty()
+    message : string;
+
+}
