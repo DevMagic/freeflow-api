@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException } from '@nestjs/common';
 import { AuthService } from 'src/auth/auth.service';
 import { ThreefoldUserDto } from './dtos/threefold-user.dto';
 import { UsersCreateBodyDto } from './dtos/users-login-body.dto';
@@ -47,12 +47,17 @@ export class UsersService {
         email : userInfo.email,
         password : userInfo.seedPhrase,
       };
-      await this.usersRepository.createNewUser(userData);
+      var getUserByName = await this.usersRepository.getUserByUsername(userInfo.username.toLowerCase());
+      if(!getUserByName){
+        await this.usersRepository.createNewUser(userData);
+      }else{
+        throw new HttpException("USER_ALREADY_EXISTS", 409);
+      }
       return; 
     }
     
     async checkUserExists(username : string){
-      var getUserByName = await this.usersRepository.getUserByUsername(username);
+      var getUserByName = await this.usersRepository.getUserByUsername(username.toLowerCase());
       if(getUserByName){
         return { message:"USER_ALREADY_EXISTS" };
       }else{
