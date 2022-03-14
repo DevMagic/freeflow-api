@@ -39,23 +39,22 @@ export class UsersService {
     }
 
     async createUser(userInfo : UsersCreateBodyDto){
+      if(!ValidationUtils.isValidEmail(userInfo.email)){
+        throw new HttpException('EMAIL_IS_NOT_VALID', 400);
+      }
+      var getUserByName = await this.usersRepository.getUserByUsername(userInfo.username.toLowerCase());
+      if(getUserByName){
+        throw new HttpException("USER_ALREADY_EXISTS", 409);
+      }
       if(process.env.ENVIRONMENT == "production"){
         await this.authService.register(userInfo)
-      }
-      if(!ValidationUtils.isValidEmail(userInfo.email)){
-        throw new HttpException('Email does not exist', 400);
       }
       var userData : any = {
         username : userInfo.username.toLowerCase(),
         email : userInfo.email,
         password : userInfo.seedPhrase,
       };
-      var getUserByName = await this.usersRepository.getUserByUsername(userInfo.username.toLowerCase());
-      if(!getUserByName){
-        await this.usersRepository.createNewUser(userData);
-      }else{
-        throw new HttpException("USER_ALREADY_EXISTS", 409);
-      }
+      await this.usersRepository.createNewUser(userData);
       return; 
     }
     

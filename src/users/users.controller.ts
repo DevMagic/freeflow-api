@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Query } fr
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ErrorHandling } from 'src/config/error-handling';
 import { HttpResponseDto } from 'src/config/http-response.dto';
-import { UsersLoginBodyDto, UsersCreateBodyDto, UsersExistBodyDto } from './dtos/users-login-body.dto';
+import { UsersLoginBodyDto, UsersCreateBodyDto } from './dtos/users-login-body.dto';
 import { UsersLoginResponseDto, UsersExistResponseDto } from './dtos/users-login-response.dto';
 import { UsersService } from './users.service';
 
