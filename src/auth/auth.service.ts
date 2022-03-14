@@ -6,6 +6,7 @@ import { jwtConstants } from './constants';
 import { UsersService } from 'src/users/users.service';
 import { UsersLoginResponseDto } from 'src/users/dtos/users-login-response.dto';
 import { UsersCreateBodyDto } from 'src/users/dtos/users-login-body.dto';
+import { ValidationUtils } from 'src/auth/validationUtils'
 import * as bcryptjs from 'bcryptjs';
 
 @Injectable()
@@ -52,13 +53,9 @@ export class AuthService {
     });
   }
 
-  isValidEmail(email : string) {
-    return email.match(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*/);
-  }
-
   async register(userInfo : UsersCreateBodyDto){
 
-    if(!this.isValidEmail(userInfo.email)){
+    if(!ValidationUtils.isValidEmail(userInfo.email)){
       throw new HttpException('Email does not exist', 400);
     }
 

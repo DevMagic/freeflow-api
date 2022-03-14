@@ -5,7 +5,7 @@ import { UsersCreateBodyDto } from './dtos/users-login-body.dto';
 import { UsersLoginResponseDto } from './dtos/users-login-response.dto';
 import { Users } from './entities/users.entity';
 import { UsersRepository } from './repositories/users.repository';
-
+import { ValidationUtils } from 'src/auth/validationUtils'
 @Injectable()
 export class UsersService {
 
@@ -42,6 +42,9 @@ export class UsersService {
       if(process.env.ENVIRONMENT == "production"){
         await this.authService.register(userInfo)
       }
+      if(!ValidationUtils.isValidEmail(userInfo.email)){
+        throw new HttpException('Email does not exist', 400);
+      }
       var userData : any = {
         username : userInfo.username.toLowerCase(),
         email : userInfo.email,
@@ -56,6 +59,7 @@ export class UsersService {
       return; 
     }
     
+    //TODO fazer alteração para verificar se usuario existe na threefold
     async checkUserExists(username : string){
       var getUserByName = await this.usersRepository.getUserByUsername(username.toLowerCase());
       if(getUserByName){

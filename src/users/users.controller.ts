@@ -52,11 +52,11 @@ export class UsersController {
   @ApiResponse({ status: 400, description: 'Bad Request', type: HttpResponseDto })
   @ApiResponse({ status: 403, description: 'Forbidden', type: HttpResponseDto })
   @ApiResponse({ status: 500, description: "Internal Server Error", type: HttpResponseDto })
-  @Get('exist')
+  @Get('/:username/exists')
   @HttpCode(200)
-  async exist(@Query() dataQuery: UsersExistBodyDto) {
+  async exist(@Param('username') username: string) {
     try {
-      return await this.usersService.checkUserExists(dataQuery.username)
+      return await this.usersService.checkUserExists(username)
     } catch (error) {
       new ErrorHandling(error);
     }
