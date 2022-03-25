@@ -19,13 +19,13 @@ export class UsersTranscriptService {
       throw new HttpException("MANDATORY_FIELD_NOT_FOUND", 404);
     }
     if(userId == userTranscript.exchangeUserId){
-      throw new HttpException("USER_ID_EQUALS_TO_EXCHANGE_USER_ID", 404);
+      throw new HttpException("USER_ID_EQUALS_TO_EXCHANGE_USER_ID", 400);
     }
     await this.createUsersTranscript(userTranscript, userId);
-    let userId_ = userTranscript.exchangeUserId;
+    let newUserId = userTranscript.exchangeUserId;
     userTranscript.exchangeUserId = userId;
     userTranscript.transferAction = 'received'
-    return await this.createUsersTranscript(userTranscript, userId_); 
+    return await this.createUsersTranscript(userTranscript, newUserId); 
   }
 
   async createGratitude(userTranscript: CreateUsersTranscriptDto, userId : string){
@@ -64,12 +64,7 @@ export class UsersTranscriptService {
   }
 
   async getUsersTranscript(userId : string, filter : string, offset : number){
-    offset = offset * 20;
-    let filterQuery = ''
-    if(filter){
-      filterQuery = `AND category = '${filter}'`
-    }
-    return await this.userTranscriptRepository.getUsersTranscript(userId, filterQuery, offset)
+    return await this.userTranscriptRepository.getUsersTranscript(userId, filter, offset)
   }
 
 }
