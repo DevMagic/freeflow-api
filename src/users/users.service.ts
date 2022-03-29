@@ -4,6 +4,7 @@ import { ThreefoldUserDto } from './dtos/threefold-user.dto';
 import { UsersCreateBodyDto } from './dtos/users-login-body.dto';
 import { UsersLoginResponseDto } from './dtos/users-login-response.dto';
 import { Users } from './entities/users.entity';
+import * as bcryptjs from 'bcryptjs';
 import { UsersRepository } from './repositories/users.repository';
 import { ValidationUtils } from 'src/auth/validationUtils'
 @Injectable()
@@ -27,7 +28,7 @@ export class UsersService {
         email : threefoldUser.email,
         phone : threefoldUser.phone,
         publicKey : threefoldUser.publicKey,
-        password : password ?? "",
+        password : bcryptjs.hashSync(password, bcryptjs.genSaltSync(10)),
       };
 
       if (getUserByName) {
@@ -52,7 +53,7 @@ export class UsersService {
       var userData : any = {
         username : userInfo.username.toLowerCase(),
         email : userInfo.email,
-        password : userInfo.seedPhrase,
+        password : bcryptjs.hashSync(userInfo.seedPhrase, bcryptjs.genSaltSync(10)),
       };
       await this.usersRepository.createNewUser(userData);
       return; 

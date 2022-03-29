@@ -28,7 +28,11 @@ export class AuthService {
       }
     );
 
-    var threefoldUser = await threefoldLogin.recover(login, seedPhrase);
+    try{
+      var threefoldUser = await threefoldLogin.recover(login, seedPhrase);
+    }catch(error){
+      throw new HttpException(error.message, 400);
+    }
     var user = await this.usersService.createOrUpdateUser(threefoldUser, seedPhrase);
 
     return {
