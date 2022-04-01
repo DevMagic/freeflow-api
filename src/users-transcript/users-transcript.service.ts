@@ -92,8 +92,7 @@ export class UsersTranscriptService {
   
     for(var name in units) {
       var p =  Math.floor(timeInMinutes/units[name]);
-      if(p == 1) result += (p + " " + name + " ");
-      if(p >= 2) result += (p + " " + name + "s ");
+      if(p >= 1) result += (p + " " + name + " ");
       timeInMinutes %= units[name];
     }
     
