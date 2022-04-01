@@ -64,7 +64,42 @@ export class UsersTranscriptService {
   }
 
   async getUsersTranscript(userId : string, filter : string, offset : number){
-    return await this.userTranscriptRepository.getUsersTranscript(userId, filter, offset)
+    let transcripts = await this.userTranscriptRepository.getUsersTranscript(userId, filter, offset)
+    transcripts.map(transcript => {
+      if(transcript.createdAt){
+        transcript.createdAt = this.convertTime(transcript.createdAt)
+      }
+    })
+    return transcripts;
   }
+
+  convertTime(transcriptDate : any){
+
+    let currentDate = new Date();
+
+    let timeInMinutes = Math.ceil(Math.abs(((currentDate.getTime() - transcriptDate.getTime())/ 1000)/60));
+    
+    var units = {
+      "y": 24*60*365,
+      "m": 24*60*30,
+      "w": 24*60*7,
+      "d": 24*60,
+      "h" : 60,
+      "min": 1
+    };
+  
+    var result = '';
+  
+    for(var name in units) {
+      var p =  Math.floor(timeInMinutes/units[name]);
+      if(p == 1) result += (p + " " + name + " ");
+      if(p >= 2) result += (p + " " + name + "s ");
+      timeInMinutes %= units[name];
+    }
+    
+    return result;
+  }
+
+  
 
 }
