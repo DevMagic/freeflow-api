@@ -5,6 +5,7 @@ import { ApiTags, ApiOperation, ApiQuery, ApiResponse, ApiBearerAuth } from '@ne
 import { GetCollectiblesFiltersDto, ResponseCollectiblesDto } from './dtos/collectibles.dto';
 import { HttpResponseDto } from '../config/http-response.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { ErrorHandling } from '../config/error-handling';
 
 @Controller('collectibles')
 @UseGuards(JwtAuthGuard)
@@ -27,7 +28,7 @@ export class CollectiblesController {
     try {
       return await this.collectiblesService.getCollectibles(collectibleType, limit, offset)
     } catch (error) {
-      throw new HttpException(error, 500)
+      new ErrorHandling(error);
     }
   }
 }
