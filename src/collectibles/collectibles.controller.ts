@@ -1,4 +1,4 @@
-import { Controller, Get, Query, HttpCode, UseGuards, HttpException } from '@nestjs/common';
+import { Controller, Get, Query, HttpCode, UseGuards, HttpException, Req } from '@nestjs/common';
 import { CollectiblesService } from './collectibles.service';
 import { Collectibles, CollectibleType } from './entities/collectibles.entity';
 import { ApiTags, ApiOperation, ApiQuery, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
@@ -24,9 +24,9 @@ export class CollectiblesController {
   @ApiResponse({ status: 500, description: "Internal Server Error", type: HttpResponseDto })
   @Get()
   @HttpCode(200)
-  async getCollectibles(@Query() {collectibleType, limit, offset}: GetCollectiblesFiltersDto): Promise<ResponseCollectiblesDto[]> {
+  async getCollectibles(@Query() {collectibleType, limit, offset}: GetCollectiblesFiltersDto, @Req() { user }): Promise<ResponseCollectiblesDto[]> {
     try {
-      return await this.collectiblesService.getCollectibles(collectibleType, limit, offset)
+      return await this.collectiblesService.getCollectibles(collectibleType, user.id, limit, offset)
     } catch (error) {
       new ErrorHandling(error);
     }

@@ -10,22 +10,20 @@ export class CollectiblesService {
 
     constructor(private readonly collectiblesRepository: CollectiblesRepository){}
 
-    async getCollectibles(collectibleType: CollectibleType, limit: number, offset: number): Promise<ResponseCollectiblesDto[]> {
+    async getCollectibles(collectibleType: CollectibleType, userId: string, limit: number, offset: number): Promise<ResponseCollectiblesDto[]> {
         if(limit < 0 || limit > 50) limit = 20
-        return (await this.collectiblesRepository.getCollectibles(collectibleType, limit, offset)).map((collectibles) => {
-            if(collectibles) {
-                let responseCollectibles: ResponseCollectiblesDto = {
-                    id: collectibles.id,
-                    collectibleType: collectibles.collectibleType,
-                    eventTitle: collectibles.event.title,
-                    eventDate: collectibles.event.eventDate,
-                    eventDescription: collectibles.event.description,
-                    eventImageUrl: collectibles.event.imageUrl,
-                    createdAt: collectibles.createdAt,
-                    updatedAt: collectibles.updatedAt,
-                };
-                return responseCollectibles
-            }
+        return (await this.collectiblesRepository.getCollectibles(collectibleType, userId, limit, offset)).map((collectibles) => {
+            let responseCollectibles: ResponseCollectiblesDto = {
+                id: collectibles.id,
+                collectibleType: collectibles.collectibleType,
+                eventTitle: collectibles.event.title,
+                eventDate: collectibles.event.eventDate,
+                eventDescription: collectibles.event.description,
+                eventImageUrl: collectibles.event.imageUrl,
+                createdAt: collectibles.createdAt,
+                updatedAt: collectibles.updatedAt,
+            };
+            return responseCollectibles
         })
     }
 }
