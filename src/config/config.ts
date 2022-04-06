@@ -2,6 +2,8 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { Pool } from 'pg';
 import { Users } from 'src/users/entities/users.entity';
 import { UsersTranscript } from 'src/users-transcript/entities/users-transcript.entity'
+import { Events } from 'src/collectibles/entities/events.entity';
+import { Collectibles } from '../collectibles/entities/collectibles.entity';
 
 require('dotenv').config();
 
@@ -43,6 +45,8 @@ class ConfigService {
         entities: [
           Users,
           UsersTranscript,
+          Events,
+          Collectibles
         ],
         migrationsTableName: 'migration',
         migrations: ['src/migration/*.ts'],
