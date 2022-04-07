@@ -1,3 +1,4 @@
+import { Collectibles } from '../../collectibles/entities/collectibles.entity';
 import {
     Entity,
     Column,
@@ -5,6 +6,8 @@ import {
     CreateDateColumn,
     UpdateDateColumn,
     BaseEntity,
+    OneToOne,
+    JoinColumn,
 } from 'typeorm';
   
 @Entity()
@@ -33,6 +36,13 @@ export class Users extends BaseEntity {
 
     @Column({ nullable: true, type: 'varchar' })
     publicKey : string;
+
+    @Column({ nullable: true, type: 'varchar', name: 'collectible_id'})
+    collectibleId: string;
+
+    @OneToOne(type => Collectibles, collectible => collectible.id)
+    @JoinColumn({ name: 'collectible_id', referencedColumnName: 'id' })
+    collectible: Collectibles;
 
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
