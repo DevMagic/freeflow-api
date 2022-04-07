@@ -22,15 +22,15 @@ export class ResponseCollectiblesDto {
 
     @ApiProperty({ enum: CollectibleType })
     collectibleType: string
+    
+    @ApiProperty()
+    imageUrl: string
 
     @ApiProperty()
     eventTitle: string
 
     @ApiProperty()
     eventDescription: string
-
-    @ApiProperty()
-    eventImageUrl: string
 
     @ApiProperty()
     eventDate: Date
