@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Query } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Query, UseGuards, Req, Put } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
 import { ErrorHandling } from 'src/config/error-handling';
 import { HttpResponseDto } from 'src/config/http-response.dto';
 import { UsersLoginBodyDto, UsersCreateBodyDto } from './dtos/users-login-body.dto';
 import { UsersLoginResponseDto, UsersExistResponseDto } from './dtos/users-login-response.dto';
 import { UsersService } from './users.service';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { ResponseUserDto, UpdateUserBodyDto } from './dtos/users.dto';
 
 @Controller('users')
 export class UsersController {
@@ -57,6 +59,43 @@ export class UsersController {
   async exist(@Param('username') username: string) {
     try {
       return await this.usersService.checkUserExists(username)
+    } catch (error) {
+      new ErrorHandling(error);
+    }
+  }
+
+  @ApiTags('users')
+  @ApiOperation({ summary: 'Return self user' })
+  @ApiBearerAuth('Bearer')
+  @ApiResponse({ status: 200, description: 'Success', type: ResponseUserDto})
+  @ApiResponse({ status: 400, description: 'Bad Request', type: HttpResponseDto })
+  @ApiResponse({ status: 403, description: 'Forbidden', type: HttpResponseDto })
+  @ApiResponse({ status: 500, description: "Internal Server Error", type: HttpResponseDto })
+  @UseGuards(JwtAuthGuard)
+  @Get()
+  @HttpCode(200)
+  async getUser(@Req() { user }) {
+    try {
+      return await this.usersService.getUser(user.id)
+    } catch (error) {
+      new ErrorHandling(error);
+    }
+  }
+
+  @ApiTags('users')
+  @ApiOperation({ summary: 'Update user authenticated' })
+  @ApiBearerAuth('Bearer')
+  @ApiBody({ type: UpdateUserBodyDto })
+  @ApiResponse({ status: 200, description: 'Success', type: ResponseUserDto})
+  @ApiResponse({ status: 400, description: 'Bad Request', type: HttpResponseDto })
+  @ApiResponse({ status: 403, description: 'Forbidden', type: HttpResponseDto })
+  @ApiResponse({ status: 500, description: "Internal Server Error", type: HttpResponseDto })
+  @UseGuards(JwtAuthGuard)
+  @Put()
+  @HttpCode(200)
+  async updateUser(@Body() body: UpdateUserBodyDto, @Req() { user }) {
+    try {
+      return await this.usersService.updateUser(user.id, body)
     } catch (error) {
       new ErrorHandling(error);
     }

@@ -7,6 +7,8 @@ import { Users } from './entities/users.entity';
 import * as bcryptjs from 'bcryptjs';
 import { UsersRepository } from './repositories/users.repository';
 import { ValidationUtils } from 'src/auth/validationUtils'
+import { ErrorHandling } from '../config/error-handling';
+import { ResponseUserDto, UpdateUserBodyDto } from './dtos/users.dto';
 @Injectable()
 export class UsersService {
 
@@ -68,4 +70,32 @@ export class UsersService {
         return { message:"OK" };
       }
     }
+
+    async getUser(userId: string): Promise<ResponseUserDto> {
+      return this.usersRepository.getUserById(userId).then(user => {
+        return {
+          id: user.id,
+          displayName: user.displayName || user.username,
+          username: user.username,
+          profileImageUrl: user.collectible?.imageUrl || null,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt
+        } as ResponseUserDto
+      })
+    }
+
+    async updateUser(userId: string, body: UpdateUserBodyDto): Promise<ResponseUserDto> {
+      if(body.displayName && body.displayName.search(" ") == 0) throw new HttpException('Display Name not contain space in 0 index', 400);
+      return this.usersRepository.updateUserById(userId, body).then(user => {
+        return {
+          id: user.id,
+          displayName: user.displayName || user.username,
+          username: user.username,
+          profileImageUrl: user.collectible?.imageUrl || null,
+          createdAt: user.createdAt,
+          updatedAt: user.updatedAt
+        } as ResponseUserDto
+      })
+    }
+    
 }
