@@ -40,6 +40,9 @@ export class Collectibles extends BaseEntity {
     @Column({ name: 'collectible_type', type: 'enum', enum: CollectibleType })
     collectibleType: string;
 
+    @Column({ nullable: true, type: 'varchar', name: 'image_url' })
+    imageUrl : string;
+
     @CreateDateColumn({ name: 'created_at' })
     createdAt: Date;
 

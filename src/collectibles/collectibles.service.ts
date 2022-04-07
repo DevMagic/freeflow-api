@@ -19,7 +19,7 @@ export class CollectiblesService {
                 eventTitle: collectibles.event.title,
                 eventDate: collectibles.event.eventDate,
                 eventDescription: collectibles.event.description,
-                eventImageUrl: collectibles.event.imageUrl,
+                imageUrl: collectibles.imageUrl,
                 createdAt: collectibles.createdAt,
                 updatedAt: collectibles.updatedAt,
             };

@@ -19,9 +19,6 @@ export class Events extends BaseEntity {
     @Column({ nullable: true, type: 'varchar' })
     description : string;
 
-    @Column({ nullable: false, type: 'varchar', name: 'image_url' })
-    imageUrl : string;
-
     @Column({ nullable: true, type: 'date', name: 'event_date' })
     eventDate : Date;
 
