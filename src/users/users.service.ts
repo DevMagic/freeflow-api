@@ -71,31 +71,26 @@ export class UsersService {
       }
     }
 
+    async responseUser(user: Users ): Promise<ResponseUserDto>  {
+      return {
+        id: user.id,
+        displayName: user.displayName || user.username,
+        username: user.username,
+        profileImageUrl: user.collectible?.imageUrl || null,
+        createdAt: user.createdAt,
+        updatedAt: user.updatedAt
+      } as ResponseUserDto
+    }
+
     async getUser(userId: string): Promise<ResponseUserDto> {
-      return this.usersRepository.getUserById(userId).then(user => {
-        return {
-          id: user.id,
-          displayName: user.displayName || user.username,
-          username: user.username,
-          profileImageUrl: user.collectible?.imageUrl || null,
-          createdAt: user.createdAt,
-          updatedAt: user.updatedAt
-        } as ResponseUserDto
-      })
+      let user = await this.usersRepository.getUserById(userId)
+      return await this.responseUser(user)
     }
 
     async updateUser(userId: string, body: UpdateUserBodyDto): Promise<ResponseUserDto> {
       if(body.displayName && body.displayName.search(" ") == 0) throw new HttpException('Display Name not contain space in 0 index', 400);
-      return this.usersRepository.updateUserById(userId, body).then(user => {
-        return {
-          id: user.id,
-          displayName: user.displayName || user.username,
-          username: user.username,
-          profileImageUrl: user.collectible?.imageUrl || null,
-          createdAt: user.createdAt,
-          updatedAt: user.updatedAt
-        } as ResponseUserDto
-      })
+      let user = await this.usersRepository.updateUserById(userId, body)
+      return this.responseUser(user)
     }
     
 }

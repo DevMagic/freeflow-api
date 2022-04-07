@@ -57,13 +57,7 @@ export class UsersRepository extends Repository<Users>{
             ...(body.displayName && {displayName: body.displayName.substring(0, 60)})
         })
 
-        return this.findOne({
-            where: {
-               id: userId 
-            },
-            relations: ['collectible'],
-            select: ['createdAt', 'updatedAt', 'displayName', 'username', 'id', 'collectible']
-        })
+        return await this.getUserById(userId)
     }
 
 }
