@@ -57,7 +57,7 @@ export class UsersRepository extends Repository<Users>{
             ...(body.displayName && {displayName: body.displayName.substring(0, 60)})
         })
 
-        return await this.getUserById(userId)
+        return this.getUserById(userId)
     }
 
 }

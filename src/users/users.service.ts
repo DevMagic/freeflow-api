@@ -71,7 +71,7 @@ export class UsersService {
       }
     }
 
-    async responseUser(user: Users ): Promise<ResponseUserDto>  {
+    responseUser(user: Users): ResponseUserDto  {
       return {
         id: user.id,
         displayName: user.displayName || user.username,
@@ -83,14 +83,12 @@ export class UsersService {
     }
 
     async getUser(userId: string): Promise<ResponseUserDto> {
-      let user = await this.usersRepository.getUserById(userId)
-      return await this.responseUser(user)
+      return this.responseUser(await this.usersRepository.getUserById(userId))
     }
 
     async updateUser(userId: string, body: UpdateUserBodyDto): Promise<ResponseUserDto> {
       if(body.displayName && body.displayName.search(" ") == 0) throw new HttpException('Display Name not contain space in 0 index', 400);
-      let user = await this.usersRepository.updateUserById(userId, body)
-      return this.responseUser(user)
+      return this.responseUser(await this.usersRepository.updateUserById(userId, body))
     }
     
 }
