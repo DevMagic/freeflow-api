@@ -35,8 +35,8 @@ export class UsersTranscript {
   id : string;
 
   @ManyToOne(type => Users, users => users.id)
-  @JoinColumn({name : 'user_id', referencedColumnName: 'id'})
-  userId: Users;
+  @JoinColumn({name : 'user_sender_id', referencedColumnName: 'id'})
+  userSenderId: Users;
 
   @Column({ nullable: false, type: 'enum', enum: Category })
   category: string;
@@ -45,11 +45,20 @@ export class UsersTranscript {
   gratitudeType: string;
 
   @ManyToOne(type => Users, users => users.id)
-  @JoinColumn({name : 'exchange_user_id', referencedColumnName: 'id'})
-  exchangeUserId: Users;
+  @JoinColumn({name : 'user_receiver_id', referencedColumnName: 'id'})
+  userReceiverId: Users;
 
   @Column({ nullable: false, type: 'numeric', default: 0 })
   amount: number;
+
+  @Column({ name : 'hash_id', nullable: true, type: 'enum', enum: GratitudeType })
+  hashId: string;
+
+  @Column({ nullable: true, type: 'numeric', default: 0 })
+  fee : number;
+
+  @Column({ nullable: true, type: 'boolean', default: false })
+  viewed : boolean;
 
   @Column({name : 'transfer_action', nullable: true, type: 'enum', enum: TransferAction })
   transferAction : string;

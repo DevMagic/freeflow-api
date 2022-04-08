@@ -15,7 +15,7 @@ export class CreateUsersTranscriptDto {
   transferAction : string
 
   @ApiProperty()
-  exchangeUserId : string
+  userReceiverId : string
 
   @ApiProperty()
   gratitudeType : string
@@ -31,4 +31,9 @@ export class GetUsersTranciptDto{
   @IsNotEmpty()
   offset : number;
 
+}
+
+export class GetUsersTranscriptByIdDto{
+  @ApiProperty()
+  changeViewed : string
 }

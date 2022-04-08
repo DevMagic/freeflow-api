@@ -1,7 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { CreateUsersTranscriptDto, GetUsersTranciptDto } from './dto/create-users-transcript.dto';
 import { UsersTranscriptRepository } from './repositories/users-transcript.repository';
-
 @Injectable()
 export class UsersTranscriptService {
 
@@ -10,7 +9,7 @@ export class UsersTranscriptService {
   ){}
 
   private async createUsersTranscript(userTranscript: any, userId : string) {
-    userTranscript.userId = userId;
+    userTranscript.userSenderId = userId;
     return await this.userTranscriptRepository.createNewUsersTranscript(userTranscript);
   }
 
@@ -18,12 +17,12 @@ export class UsersTranscriptService {
     if(!userTranscript.transferAction){
       throw new HttpException("MANDATORY_FIELD_NOT_FOUND", 404);
     }
-    if(userId == userTranscript.exchangeUserId){
+    if(userId == userTranscript.userReceiverId){
       throw new HttpException("USER_ID_EQUALS_TO_EXCHANGE_USER_ID", 400);
     }
     await this.createUsersTranscript(userTranscript, userId);
-    let newUserId = userTranscript.exchangeUserId;
-    userTranscript.exchangeUserId = userId;
+    let newUserId = userTranscript.userReceiverId;
+    userTranscript.userReceiverId = userId;
     userTranscript.transferAction = 'received'
     return await this.createUsersTranscript(userTranscript, newUserId); 
   }
@@ -99,6 +98,10 @@ export class UsersTranscriptService {
     return result;
   }
 
-  
-
+  async getUsersTranscriptById(userId : string, transcriptId : string, changeViewed : string){
+    if(changeViewed == "1"){
+      await this.userTranscriptRepository.changeViewedTranscript(transcriptId);
+    }
+    return await this.userTranscriptRepository.getUsersTranscriptById(userId, transcriptId);
+  }
 }
