@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { CollectibleType } from '../entities/collectibles.entity';
+import { CollectibleType, TimeType } from '../enums/collectibles.enum';
 
 export class GetCollectiblesFiltersDto {
 
@@ -12,6 +12,9 @@ export class GetCollectiblesFiltersDto {
     @ApiProperty({ enum: CollectibleType })
     collectibleType?: CollectibleType;
 
+    @ApiProperty({ enum: TimeType })
+    time?: TimeType;
+
 
 }
 
@@ -22,6 +25,18 @@ export class ResponseCollectiblesDto {
 
     @ApiProperty({ enum: CollectibleType })
     collectibleType: string
+
+    @ApiProperty()
+    authorName: string
+
+    @ApiProperty()
+    qrCodeImageUrl: string
+
+    @ApiProperty()
+    contractAddress: string
+
+    @ApiProperty()
+    tokenId: number
     
     @ApiProperty()
     imageUrl: string
@@ -29,8 +44,6 @@ export class ResponseCollectiblesDto {
     @ApiProperty()
     eventTitle: string
 
-    @ApiProperty()
-    eventDescription: string
 
     @ApiProperty()
     eventDate: Date

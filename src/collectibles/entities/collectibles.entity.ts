@@ -11,11 +11,7 @@ import {
 } from 'typeorm';
 import { Events } from './events.entity';
 import { Users } from '../../users/entities/users.entity';
-
-export enum CollectibleType {
-    badge = 'badge',
-    ticket = 'ticket'
-}
+import { CollectibleType } from '../enums/collectibles.enum';
 
 @Entity()
 export class Collectibles extends BaseEntity {
@@ -28,6 +24,18 @@ export class Collectibles extends BaseEntity {
 
     @Column({ nullable: false, type: 'uuid', name: 'user_id' })
     userId: string;
+
+    @Column({ nullable: false, type: 'varchar', name: 'author_name' })
+    authorName: string;
+
+    @Column({ nullable: false, type: 'varchar', name: 'qr_code_image_url' })
+    qrCodeImageUrl: string;
+
+    @Column({ nullable: false, type: 'varchar', name: 'contract_address' })
+    contractAddress: string;
+
+    @Column({ nullable: false, type: 'numeric', name: 'token_id' })
+    tokenId: number;
 
     @OneToOne(type => Users, users => users.id)
     @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
