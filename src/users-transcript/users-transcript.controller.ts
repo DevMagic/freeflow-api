@@ -3,8 +3,9 @@ import { ApiBody, ApiOperation, ApiResponse, ApiTags, ApiBearerAuth, ApiQuery } 
 import { ErrorHandling } from 'src/config/error-handling';
 import { HttpResponseDto } from 'src/config/http-response.dto';
 import { UsersTranscriptService } from './users-transcript.service';
-import { CreateUsersTranscriptDto, GetUsersTranciptDto } from './dto/create-users-transcript.dto';
+import { CreateUsersTranscriptDto, GetUsersTranciptDto, GetUsersTranscriptByIdDto } from './dto/create-users-transcript.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { UsersTranscriptResponseDto } from 'src/users-transcript/dto/users-transcript-response'
 
 @Controller('users-transcript')
 export class UsersTranscriptController {
@@ -43,6 +44,25 @@ export class UsersTranscriptController {
   getTranscript(@Req() { user }, @Query() filter : GetUsersTranciptDto) {
     try {
       return this.usersTranscriptService.getUsersTranscript(user.id, filter.category, filter.offset)
+    } catch (error) {
+      new ErrorHandling(error);
+    }
+  }
+
+  @ApiTags('users-transcript')
+  @ApiOperation({ summary: 'Get history of transactions with Id' })
+  @ApiBearerAuth('Bearer')
+  @ApiQuery({ name : "changeViewed", type: "string", required: false })
+  @ApiResponse({ status: 200, description: 'Success', type: UsersTranscriptResponseDto })
+  @ApiResponse({ status: 400, description: 'Bad Request', type: HttpResponseDto })
+  @ApiResponse({ status: 403, description: 'Forbidden', type: HttpResponseDto })
+  @ApiResponse({ status: 500, description: "Internal Server Error", type: HttpResponseDto })
+  @UseGuards(JwtAuthGuard)
+  @Get(':id')
+  @HttpCode(200)
+  getTranscriptById(@Req() { user }, @Param('id') id: string, @Query() query : GetUsersTranscriptByIdDto) {
+    try {
+      return this.usersTranscriptService.getUsersTranscriptById(user.id, id, query.changeViewed);
     } catch (error) {
       new ErrorHandling(error);
     }
