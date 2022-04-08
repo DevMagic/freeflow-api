@@ -93,7 +93,7 @@ export class UsersService {
 
     async getContract(userId: string): Promise<ResponseContractDto> {
       let user = await this.usersRepository.getContractByUserId(userId)
-      if(!user) throw new HttpException('User collectible not found', 404)
+      if(!user.collectible) throw new HttpException('User collectible not found', 404)
       return {
         contractAddress: user.collectible.contractAddress,
         qrCodeImageUrl: user.collectible.qrCodeImageUrl
