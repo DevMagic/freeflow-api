@@ -1,6 +1,7 @@
-import { Repository, EntityRepository } from 'typeorm';
-import { Collectibles, CollectibleType } from '../entities/collectibles.entity';
+import { Repository, EntityRepository, LessThanOrEqual, MoreThan } from 'typeorm';
+import { Collectibles } from '../entities/collectibles.entity';
 import { Injectable } from '@nestjs/common';
+import { CollectibleType } from '../enums/collectibles.enum';
 
 
 @Injectable()
@@ -11,15 +12,25 @@ export class CollectiblesRepository extends Repository<Collectibles>{
         super();
     }
 
-    async getCollectibles(collectibleType: CollectibleType, userId: string, limit: number, offset: number): Promise<Collectibles[]> {
+    async getCollectibles(collectibleType: CollectibleType, userId: string, limit: number, offset: number, time: string): Promise<Collectibles[]> {
         return this.find({
             where: {
                 ...(collectibleType && {collectibleType}),
-                ...(userId && {userId})
+                ...(userId && {userId}),
+                ...(time && time == 'past' && {event: {eventDate: LessThanOrEqual(new Date())}} 
+                || time && time == 'future' && {event: {eventDate: MoreThan(new Date())}}),
             },
             take: limit,
             skip: offset,
             relations: ['event'] 
+        })
+    }
+    async getCollectible(collectibleId: string): Promise<Collectibles> {
+        return this.findOne({
+            where: {
+                id: collectibleId
+            },
+            relations: ['event']
         })
     }
 
