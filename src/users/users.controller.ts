@@ -6,7 +6,7 @@ import { UsersLoginBodyDto, UsersCreateBodyDto } from './dtos/users-login-body.d
 import { UsersLoginResponseDto, UsersExistResponseDto } from './dtos/users-login-response.dto';
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
-import { ResponseUserDto, UpdateUserBodyDto } from './dtos/users.dto';
+import { ResponseUserDto, UpdateUserBodyDto, ResponseContractDto } from './dtos/users.dto';
 
 @Controller('users')
 export class UsersController {
@@ -96,6 +96,24 @@ export class UsersController {
   async updateUser(@Body() body: UpdateUserBodyDto, @Req() { user }) {
     try {
       return await this.usersService.updateUser(user.id, body)
+    } catch (error) {
+      new ErrorHandling(error);
+    }
+  }
+
+  @ApiTags('users')
+  @ApiOperation({ summary: 'Return contract and qrcode' })
+  @ApiBearerAuth('Bearer')
+  @ApiResponse({ status: 200, description: 'Success', type: ResponseContractDto})
+  @ApiResponse({ status: 400, description: 'Bad Request', type: HttpResponseDto })
+  @ApiResponse({ status: 403, description: 'Forbidden', type: HttpResponseDto })
+  @ApiResponse({ status: 500, description: "Internal Server Error", type: HttpResponseDto })
+  @UseGuards(JwtAuthGuard)
+  @Get('contract')
+  @HttpCode(200)
+  async getContract(@Req() { user }) {
+    try {
+      return await this.usersService.getContract(user.id)
     } catch (error) {
       new ErrorHandling(error);
     }

@@ -20,6 +20,14 @@ export class ResponseUserDto {
     updatedAt: Date
 }
 
+export class ResponseContractDto {
+    @ApiProperty()
+    qrCodeImageUrl: string
+    
+    @ApiProperty()
+    contractAddress: string
+}
+
 export class UpdateUserBodyDto {
     @ApiProperty()
     displayName: string
