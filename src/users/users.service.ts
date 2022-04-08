@@ -8,7 +8,7 @@ import * as bcryptjs from 'bcryptjs';
 import { UsersRepository } from './repositories/users.repository';
 import { ValidationUtils } from 'src/auth/validationUtils'
 import { ErrorHandling } from '../config/error-handling';
-import { ResponseUserDto, UpdateUserBodyDto } from './dtos/users.dto';
+import { ResponseUserDto, UpdateUserBodyDto, ResponseContractDto } from './dtos/users.dto';
 @Injectable()
 export class UsersService {
 
@@ -89,6 +89,15 @@ export class UsersService {
     async updateUser(userId: string, body: UpdateUserBodyDto): Promise<ResponseUserDto> {
       if(body.displayName && body.displayName.search(" ") == 0) throw new HttpException('Display Name not contain space in 0 index', 400);
       return this.responseUser(await this.usersRepository.updateUserById(userId, body))
+    }
+
+    async getContract(userId: string): Promise<ResponseContractDto> {
+      let user = await this.usersRepository.getContractByUserId(userId)
+      if(!user.collectible) throw new HttpException('User collectible not found', 404)
+      return {
+        contractAddress: user.collectible.contractAddress,
+        qrCodeImageUrl: user.collectible.qrCodeImageUrl
+      }
     }
     
 }

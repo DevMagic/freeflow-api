@@ -60,4 +60,14 @@ export class UsersRepository extends Repository<Users>{
         return this.getUserById(userId)
     }
 
+    async getContractByUserId(userId: string): Promise<Users> {
+        return this.findOne({
+            where:{
+                id: userId
+            },
+            select: ['collectible', 'id'],
+            relations: ['collectible']
+        })
+    }
+
 }
