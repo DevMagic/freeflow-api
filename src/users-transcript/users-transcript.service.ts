@@ -1,7 +1,6 @@
 import { HttpException, Injectable } from '@nestjs/common';
 import { CreateUsersTranscriptDto, GetUsersTranciptDto } from './dto/create-users-transcript.dto';
 import { UsersTranscriptRepository } from './repositories/users-transcript.repository';
-import * as moment from 'moment';
 @Injectable()
 export class UsersTranscriptService {
 
@@ -103,10 +102,6 @@ export class UsersTranscriptService {
     if(changeViewed == "1"){
       await this.userTranscriptRepository.changeViewedTranscript(transcriptId);
     }
-    let transcript = await this.userTranscriptRepository.getUsersTranscriptById(userId, transcriptId);
-    if(transcript.createdAt){
-      transcript.date = (moment(transcript.createdAt)).format('YYYY/MM/DD HH:mm:ss');
-    }
-    return transcript;
+    return await this.userTranscriptRepository.getUsersTranscriptById(userId, transcriptId);
   }
 }
