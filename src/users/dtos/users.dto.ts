@@ -29,10 +29,13 @@ export class ResponseContractDto {
 }
 
 export class UpdateUserBodyDto {
-    @ApiProperty()
+    @ApiProperty({required: false})
     displayName: string
 
-    @ApiProperty()
+    @ApiProperty({required: false})
     collectibleId: string
+
+    @ApiProperty({ required: false, type: "file" })
+    file : object;
     
 }
