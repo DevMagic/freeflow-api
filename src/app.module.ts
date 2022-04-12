@@ -7,8 +7,10 @@ import { configService } from './config/config';
 import { UsersModule } from './users/users.module';
 import { UsersTranscriptModule } from './users-transcript/users-transcript.module';
 import { CollectiblesModule } from './collectibles/collectibles.module';
+import { FilesUploadModule } from './providers/file-upload-provider/file-upload-provider.module';
 @Module({
   imports: [
+    FilesUploadModule,
     CollectiblesModule,
     TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
     AuthModule,

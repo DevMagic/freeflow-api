@@ -7,14 +7,16 @@ import { Users } from './entities/users.entity';
 import * as bcryptjs from 'bcryptjs';
 import { UsersRepository } from './repositories/users.repository';
 import { ValidationUtils } from 'src/auth/validationUtils'
-import { ErrorHandling } from '../config/error-handling';
 import { ResponseUserDto, UpdateUserBodyDto, ResponseContractDto } from './dtos/users.dto';
+import { FilesUploadService } from '../providers/file-upload-provider/file-upload-provider.service';
+import { File } from 'aws-sdk/lib/dynamodb/document_client';
 @Injectable()
 export class UsersService {
 
     constructor(
         private readonly authService : AuthService,
         private readonly usersRepository : UsersRepository,
+        private readonly filesUploadService: FilesUploadService,
     ){}
 
     async login(login : string, seedPhrase : string) : Promise<UsersLoginResponseDto> {
@@ -76,7 +78,7 @@ export class UsersService {
         id: user.id,
         displayName: user.displayName || user.username,
         username: user.username,
-        profileImageUrl: user.collectible?.imageUrl || null,
+        profileImageUrl: user.photoUrl || user.collectible?.imageUrl || null,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt
       } as ResponseUserDto
@@ -86,9 +88,19 @@ export class UsersService {
       return this.responseUser(await this.usersRepository.getUserById(userId))
     }
 
-    async updateUser(userId: string, body: UpdateUserBodyDto): Promise<ResponseUserDto> {
+    async updateUser(userId: string, body: UpdateUserBodyDto, file): Promise<ResponseUserDto> {
       if(body.displayName && body.displayName.search(" ") == 0) throw new HttpException('Display Name not contain space in 0 index', 400);
-      return this.responseUser(await this.usersRepository.updateUserById(userId, body))
+      let imageUrl: string;
+      const imagesAcceptTypes = ['image/png', 'image/jpeg', 'image/jpg', 'application/octet-stream'];
+      if(file && imagesAcceptTypes.includes(file.mimetype)) {
+        let fileUploaded = await this.filesUploadService.uploadFileToS3Minio(
+          file.buffer,
+          file.originalname,
+          userId,
+        );
+        imageUrl = fileUploaded
+      } else throw new HttpException('not accepted type file', 400)
+      return this.responseUser(await this.usersRepository.updateUserById(userId, body, imageUrl))
     }
 
     async getContract(userId: string): Promise<ResponseContractDto> {

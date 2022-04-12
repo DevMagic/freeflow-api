@@ -47,14 +47,15 @@ export class UsersRepository extends Repository<Users>{
                id: userId 
             },
             relations: ['collectible'],
-            select: ['createdAt', 'updatedAt', 'displayName', 'username', 'id', 'collectible']
+            select: ['createdAt', 'updatedAt', 'displayName', 'username', 'id', 'collectible', 'photoUrl']
         })
     }
 
-    async updateUserById(userId: string, body: UpdateUserBodyDto): Promise<Users> {
+    async updateUserById(userId: string, body: UpdateUserBodyDto, imageUrl: string): Promise<Users> {
         await this.update(userId, {
             ...(body.collectibleId && {collectibleId: body.collectibleId}),
-            ...(body.displayName && {displayName: body.displayName.substring(0, 60)})
+            ...(body.displayName && {displayName: body.displayName.substring(0, 60)}),
+            ...(imageUrl && {photoUrl: imageUrl})
         })
 
         return this.getUserById(userId)

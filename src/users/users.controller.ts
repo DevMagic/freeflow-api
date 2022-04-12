@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Query, UseGuards, Req, Put } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpCode, Query, UseGuards, Req, Put, UseInterceptors, UploadedFile, HttpException } from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags, ApiBearerAuth, ApiParam, ApiConsumes } from '@nestjs/swagger';
 import { ErrorHandling } from 'src/config/error-handling';
 import { HttpResponseDto } from 'src/config/http-response.dto';
 import { UsersLoginBodyDto, UsersCreateBodyDto } from './dtos/users-login-body.dto';
@@ -7,17 +7,19 @@ import { UsersLoginResponseDto, UsersExistResponseDto } from './dtos/users-login
 import { UsersService } from './users.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { ResponseUserDto, UpdateUserBodyDto, ResponseContractDto } from './dtos/users.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { memoryStorage } from 'multer'
 
 @Controller('users')
 export class UsersController {
   constructor(
     private readonly usersService: UsersService,
-    ) {}
+  ) { }
 
   @ApiTags('users')
   @ApiOperation({ summary: 'Login with Threefold Connect account' })
   @ApiBody({ type: UsersLoginBodyDto })
-  @ApiResponse({ status: 200, description: 'Successfully logged in', type : UsersLoginResponseDto })
+  @ApiResponse({ status: 200, description: 'Successfully logged in', type: UsersLoginResponseDto })
   @ApiResponse({ status: 400, description: 'Bad Request', type: HttpResponseDto })
   @ApiResponse({ status: 403, description: 'Forbidden', type: HttpResponseDto })
   @ApiResponse({ status: 500, description: "Internal Server Error", type: HttpResponseDto })
@@ -50,7 +52,7 @@ export class UsersController {
 
   @ApiTags('users')
   @ApiOperation({ summary: 'Checks if user already exists' })
-  @ApiResponse({ status: 200, description: 'Success', type : UsersExistResponseDto })
+  @ApiResponse({ status: 200, description: 'Success', type: UsersExistResponseDto })
   @ApiResponse({ status: 400, description: 'Bad Request', type: HttpResponseDto })
   @ApiResponse({ status: 403, description: 'Forbidden', type: HttpResponseDto })
   @ApiResponse({ status: 500, description: "Internal Server Error", type: HttpResponseDto })
@@ -67,7 +69,7 @@ export class UsersController {
   @ApiTags('users')
   @ApiOperation({ summary: 'Return self user' })
   @ApiBearerAuth('Bearer')
-  @ApiResponse({ status: 200, description: 'Success', type: ResponseUserDto})
+  @ApiResponse({ status: 200, description: 'Success', type: ResponseUserDto })
   @ApiResponse({ status: 400, description: 'Bad Request', type: HttpResponseDto })
   @ApiResponse({ status: 403, description: 'Forbidden', type: HttpResponseDto })
   @ApiResponse({ status: 500, description: "Internal Server Error", type: HttpResponseDto })
@@ -86,25 +88,33 @@ export class UsersController {
   @ApiOperation({ summary: 'Update user authenticated' })
   @ApiBearerAuth('Bearer')
   @ApiBody({ type: UpdateUserBodyDto })
-  @ApiResponse({ status: 200, description: 'Success', type: ResponseUserDto})
+  @ApiResponse({ status: 200, description: 'Success', type: ResponseUserDto })
   @ApiResponse({ status: 400, description: 'Bad Request', type: HttpResponseDto })
   @ApiResponse({ status: 403, description: 'Forbidden', type: HttpResponseDto })
   @ApiResponse({ status: 500, description: "Internal Server Error", type: HttpResponseDto })
+  @ApiConsumes('multipart/form-data')
   @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileInterceptor('file', {
+    storage: memoryStorage(),
+  }))
   @Put()
   @HttpCode(200)
-  async updateUser(@Body() body: UpdateUserBodyDto, @Req() { user }) {
+  async updateUser(@Body() body: UpdateUserBodyDto, @Req() { user }, @UploadedFile() file,) {
     try {
-      return await this.usersService.updateUser(user.id, body)
+
+      return await this.usersService.updateUser(user.id, body, file)
+
     } catch (error) {
+
       new ErrorHandling(error);
+
     }
   }
 
   @ApiTags('users')
   @ApiOperation({ summary: 'Return contract and qrcode' })
   @ApiBearerAuth('Bearer')
-  @ApiResponse({ status: 200, description: 'Success', type: ResponseContractDto})
+  @ApiResponse({ status: 200, description: 'Success', type: ResponseContractDto })
   @ApiResponse({ status: 400, description: 'Bad Request', type: HttpResponseDto })
   @ApiResponse({ status: 403, description: 'Forbidden', type: HttpResponseDto })
   @ApiResponse({ status: 500, description: "Internal Server Error", type: HttpResponseDto })

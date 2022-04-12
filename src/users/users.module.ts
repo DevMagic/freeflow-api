@@ -4,6 +4,7 @@ import { UsersController } from './users.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersRepository } from './repositories/users.repository';
 import { AuthModule } from 'src/auth/auth.module';
+import { FilesUploadModule } from '../providers/file-upload-provider/file-upload-provider.module';
 
 @Module({
   imports: [
@@ -11,6 +12,7 @@ import { AuthModule } from 'src/auth/auth.module';
       UsersRepository,
     ]),
     forwardRef(() => AuthModule),
+    FilesUploadModule,
   ],
   controllers: [UsersController],
   providers: [UsersService],
