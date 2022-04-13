@@ -33,7 +33,7 @@ export class CollectiblesService {
             imageUrl: collectibles.imageUrl,
             qrCodeImageUrl: collectibles.qrCodeImageUrl,
             contractAddress: collectibles.contractAddress,
-            tokenId: collectibles.tokenId,
+            tokenId: +collectibles.tokenId,
             eventDate: collectibles.event.eventDate,
             createdAt: collectibles.createdAt,
             updatedAt: collectibles.updatedAt,
