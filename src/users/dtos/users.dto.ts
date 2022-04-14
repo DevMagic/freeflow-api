@@ -11,6 +11,9 @@ export class ResponseUserDto {
     username: string
 
     @ApiProperty()
+    contractAddress: string
+
+    @ApiProperty()
     profileImageUrl: string
 
     @ApiProperty()
