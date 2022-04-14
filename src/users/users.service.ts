@@ -92,14 +92,16 @@ export class UsersService {
       if(body.displayName && body.displayName.search(" ") == 0) throw new HttpException('Display Name not contain space in 0 index', 400);
       let imageUrl: string;
       const imagesAcceptTypes = ['image/png', 'image/jpeg', 'image/jpg', 'application/octet-stream'];
-      if(file && imagesAcceptTypes.includes(file.mimetype)) {
-        let fileUploaded = await this.filesUploadService.uploadFileToS3Minio(
-          file.buffer,
-          file.originalname,
-          userId,
-        );
-        imageUrl = fileUploaded
-      } else throw new HttpException('not accepted type file', 400)
+      if(file) {
+        if(imagesAcceptTypes.includes(file.mimetype)) {
+          let fileUploaded = await this.filesUploadService.uploadFileToS3Minio(
+            file.buffer,
+            file.originalname,
+            userId,
+          );
+          imageUrl = fileUploaded
+        } else throw new HttpException('not accepted type file', 400)
+      }
       return this.responseUser(await this.usersRepository.updateUserById(userId, body, imageUrl))
     }
 

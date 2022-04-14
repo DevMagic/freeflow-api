@@ -38,12 +38,11 @@ export class ResponseCollectiblesDto {
     @ApiProperty()
     tokenId: number
     
-    @ApiProperty()
+    @ApiProperty({nullable: true})
     imageUrl: string
 
     @ApiProperty()
     eventTitle: string
-
 
     @ApiProperty()
     eventDate: Date
