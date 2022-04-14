@@ -79,6 +79,7 @@ export class UsersService {
         displayName: user.displayName || user.username,
         username: user.username,
         profileImageUrl: user.photoUrl || user.collectible?.imageUrl || null,
+        contractAddress: user.collectible?.contractAddress,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt
       } as ResponseUserDto
