@@ -37,7 +37,7 @@ export class Collectibles extends BaseEntity {
     @Column({ nullable: false, type: 'numeric', name: 'token_id' })
     tokenId: number;
 
-    @OneToOne(type => Users, users => users.id)
+    @ManyToOne(type => Users, users => users.id)
     @JoinColumn({ name: 'user_id', referencedColumnName: 'id' })
     user: Users;
 
