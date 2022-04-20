@@ -73,11 +73,8 @@ export class UsersTranscriptService {
   }
 
   convertTime(transcriptDate : any){
-
     let currentDate = new Date();
-
     let timeInMinutes = Math.ceil(Math.abs(((currentDate.getTime() - transcriptDate.getTime())/ 1000)/60));
-    
     var units = {
       "y": 24*60*365,
       "m": 24*60*30,
@@ -91,11 +88,10 @@ export class UsersTranscriptService {
   
     for(var name in units) {
       var p =  Math.floor(timeInMinutes/units[name]);
-      if(p >= 1) result += (p + " " + name + " ");
+      if(p >= 1) return result += (p + " " + name);
       timeInMinutes %= units[name];
     }
-    
-    return result;
+  
   }
 
   async getUsersTranscriptById(userId : string, transcriptId : string, changeViewed : string){

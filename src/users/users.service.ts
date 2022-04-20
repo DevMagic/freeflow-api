@@ -10,6 +10,7 @@ import { ValidationUtils } from 'src/auth/validationUtils'
 import { ResponseUserDto, UpdateUserBodyDto, ResponseContractDto } from './dtos/users.dto';
 import { FilesUploadService } from '../providers/file-upload-provider/file-upload-provider.service';
 import { File } from 'aws-sdk/lib/dynamodb/document_client';
+import { WalletService } from 'src/wallet/wallet.service';
 @Injectable()
 export class UsersService {
 
@@ -17,10 +18,21 @@ export class UsersService {
         private readonly authService : AuthService,
         private readonly usersRepository : UsersRepository,
         private readonly filesUploadService: FilesUploadService,
+        private readonly walletService: WalletService,
     ){}
 
     async login(login : string, seedPhrase : string) : Promise<UsersLoginResponseDto> {
-        return this.authService.recover(login, seedPhrase);
+      let loginInfo = await this.authService.recover(login, seedPhrase);
+      let userWallet = await this.walletService.getWalletByUserId(loginInfo.id)
+      if(!userWallet){
+        let walletInfo = {
+          userId : loginInfo.id,
+          walletAddress : bcryptjs.hashSync(bcryptjs.genSaltSync(10)),
+          email: loginInfo.email
+        }
+        await this.walletService.createWallet(walletInfo);
+      }
+      return loginInfo;
     }
 
     async createOrUpdateUser(threefoldUser : ThreefoldUserDto, password? : string) : Promise<Users> {
@@ -38,8 +50,17 @@ export class UsersService {
       if (getUserByName) {
         userData.id = getUserByName.id;
       }
-
-      return this.usersRepository.createOrUpdateUser(userData);
+      let user = await this.usersRepository.createOrUpdateUser(userData);
+      let userWallet = await this.walletService.getWalletByUserId(user.id)
+      if(!userWallet){
+        let walletInfo = {
+          userId : user.id,
+          walletAddress : bcryptjs.hashSync(bcryptjs.genSaltSync(10)),
+          email: user.email
+        }
+        await this.walletService.createWallet(walletInfo);
+      }
+      return user; 
 
     }
 
@@ -59,7 +80,16 @@ export class UsersService {
         email : userInfo.email,
         password : bcryptjs.hashSync(userInfo.seedPhrase, bcryptjs.genSaltSync(10)),
       };
-      await this.usersRepository.createNewUser(userData);
+      let user = await this.usersRepository.createNewUser(userData);
+      let userWallet = await this.walletService.getWalletByUserId(user.id)
+      if(!userWallet){
+        let walletInfo = {
+          userId : user.id,
+          walletAddress : bcryptjs.hashSync(bcryptjs.genSaltSync(10)),
+          email: user.email
+        }
+        await this.walletService.createWallet(walletInfo);
+      }
       return; 
     }
     

@@ -4,6 +4,7 @@ import { Users } from 'src/users/entities/users.entity';
 import { UsersTranscript } from 'src/users-transcript/entities/users-transcript.entity'
 import { Events } from 'src/collectibles/entities/events.entity';
 import { Collectibles } from '../collectibles/entities/collectibles.entity';
+import { Wallet } from '../wallet/entities/wallet.entity'
 
 require('dotenv').config();
 
@@ -46,7 +47,8 @@ class ConfigService {
           Users,
           UsersTranscript,
           Events,
-          Collectibles
+          Collectibles,
+          Wallet,
         ],
         migrationsTableName: 'migration',
         migrations: ['src/migration/*.ts'],

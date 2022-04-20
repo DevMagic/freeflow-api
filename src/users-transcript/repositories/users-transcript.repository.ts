@@ -31,7 +31,7 @@ export class UsersTranscriptRepository extends Repository<UsersTranscript>{
       filterQuery += `AND category = $2`
     }
 
-    let userTranscript = this.query(`SELECT category, amount, gratitude_type, created_at, transfer_action, id, viewed,
+    let userTranscript = this.query(`SELECT category, amount, gratitude_type, created_at::timestamptz, transfer_action, id, viewed,
                                     (SELECT username from users u where u.id = ut.user_sender_id) as username, 
                                     (SELECT username from users u where u.id = ut.user_receiver_id) as exchange_username,
                                     (SELECT photo_url from users u where u.id = ut.user_receiver_id) as photo_url
