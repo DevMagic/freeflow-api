@@ -8,6 +8,7 @@ import { UsersModule } from './users/users.module';
 import { UsersTranscriptModule } from './users-transcript/users-transcript.module';
 import { CollectiblesModule } from './collectibles/collectibles.module';
 import { FilesUploadModule } from './providers/file-upload-provider/file-upload-provider.module';
+import { WalletModule } from './wallet/wallet.module';
 @Module({
   imports: [
     FilesUploadModule,
@@ -16,6 +17,7 @@ import { FilesUploadModule } from './providers/file-upload-provider/file-upload-
     AuthModule,
     UsersModule,
     UsersTranscriptModule,
+    WalletModule,
   ],
   controllers: [AppController],
   providers: [AppService],
