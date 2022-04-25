@@ -56,7 +56,7 @@ export class UsersTranscriptRepository extends Repository<UsersTranscript>{
                                            LEFT JOIN users receiver
                                            ON ut.user_receiver_id = receiver.id
                                            WHERE user_sender_id = $1 and ut.id = $2`, params);
-    return camelcaseKeys(userTranscript[0]? userTranscript[0] : userTranscript);                        
+    return userTranscript && userTranscript.length ? camelcaseKeys(userTranscript[0]) : null;                        
   }
 
   async changeViewedTranscript(transcriptId : string){
