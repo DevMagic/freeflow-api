@@ -98,6 +98,10 @@ export class UsersTranscriptService {
     if(changeViewed == "1"){
       await this.userTranscriptRepository.changeViewedTranscript(transcriptId);
     }
-    return await this.userTranscriptRepository.getUsersTranscriptById(userId, transcriptId);
+    let transcript = await this.userTranscriptRepository.getUsersTranscriptById(userId, transcriptId);
+    if(!transcript){
+      throw new HttpException("TRANSCRIPT_NOT_FOUND", 404);
+    }
+    return transcript;
   }
 }
