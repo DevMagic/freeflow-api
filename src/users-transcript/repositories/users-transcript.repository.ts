@@ -48,15 +48,15 @@ export class UsersTranscriptRepository extends Repository<UsersTranscript>{
     params.push(userId, transcriptId);
 
     let userTranscript = await this.query(`SELECT amount, ut.created_at as date, fee, sender.email as sender_email,
-                                                  sender.photo_url as sender_photo_url, reciver.email as reciver_email,
-                                                  reciver.photo_url as reciver_photo_url
+                                                  sender.photo_url as sender_photo_url, receiver.email as receiver_email,
+                                                  receiver.photo_url as receiver_photo_url, sender.username as sender_username, receiver.username as receiver_username
                                            FROM users_transcript ut
                                            INNER JOIN users sender
                                            ON ut.user_sender_id = sender.id
-                                           LEFT JOIN users reciver
-                                           ON ut.user_receiver_id = reciver.id
+                                           LEFT JOIN users receiver
+                                           ON ut.user_receiver_id = receiver.id
                                            WHERE user_sender_id = $1 and ut.id = $2`, params);
-    return camelcaseKeys(userTranscript[0]);                        
+    return userTranscript && userTranscript.length ? camelcaseKeys(userTranscript[0]) : null;                        
   }
 
   async changeViewedTranscript(transcriptId : string){
