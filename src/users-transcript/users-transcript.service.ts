@@ -67,6 +67,7 @@ export class UsersTranscriptService {
     transcripts.map(transcript => {
       if(transcript.createdAt){
         transcript.createdAt = this.convertTime(transcript.createdAt)
+        transcript.amount = +transcript.amount
       }
     })
     return transcripts;
@@ -101,6 +102,10 @@ export class UsersTranscriptService {
     let transcript = await this.userTranscriptRepository.getUsersTranscriptById(userId, transcriptId);
     if(!transcript){
       throw new HttpException("TRANSCRIPT_NOT_FOUND", 404);
+    }
+    if(transcript.amount || transcript.fee){
+      transcript.amount = +transcript.amount
+      transcript.fee = +transcript.fee
     }
     return transcript;
   }
