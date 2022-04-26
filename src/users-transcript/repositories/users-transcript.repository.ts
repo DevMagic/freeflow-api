@@ -31,11 +31,15 @@ export class UsersTranscriptRepository extends Repository<UsersTranscript>{
       filterQuery += `AND category = $2`
     }
 
-    let userTranscript = this.query(`SELECT category, amount, gratitude_type, created_at::timestamptz, transfer_action, id, viewed,
-                                    (SELECT username from users u where u.id = ut.user_sender_id) as username, 
-                                    (SELECT username from users u where u.id = ut.user_receiver_id) as exchange_username,
-                                    (SELECT photo_url from users u where u.id = ut.user_receiver_id) as photo_url
+    let userTranscript = this.query(`SELECT category, amount, gratitude_type, ut.created_at::timestamptz, transfer_action, ut.id, viewed,
+                                            sender.username as sender_username, receiver.username as receiver_username,
+                                            sender.display_name as sender_display_name, receiver.display_name as receiver_display_name,
+                                            receiver.photo_url as receiver_photo_url, sender.photo_url as sender_photo_url
                                     FROM users_transcript ut
+                                    INNER JOIN users sender
+                                    ON ut.user_sender_id = sender.id
+                                    LEFT JOIN users receiver
+                                    ON ut.user_receiver_id = receiver.id
                                     WHERE ${filterQuery}
                                     ORDER by ut.created_at DESC
                                     LIMIT 20  
