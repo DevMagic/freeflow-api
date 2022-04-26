@@ -103,7 +103,7 @@ export class UsersTranscriptService {
     if(!transcript){
       throw new HttpException("TRANSCRIPT_NOT_FOUND", 404);
     }
-    if(transcript.amount || transcript.fee){
+    if(transcript.amount && transcript.fee){
       transcript.amount = +transcript.amount
       transcript.fee = +transcript.fee
     }
